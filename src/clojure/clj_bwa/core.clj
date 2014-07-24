@@ -2,7 +2,7 @@
   (:require [clj-bwa.util :refer [boolean->int]]
             [clj-bwa.exception :refer [libbwa-error->exception]])
   (:import com.sun.jna.Native
-           [clj_bwa.jna BWALibrary AlnOption SamseOption SampeOption]))
+           [clj_bwa.jna BWALibrary AlnOption SamseOption SampeOption SwOption]))
 
 (def ^BWALibrary bwalib (Native/loadLibrary "bwa" BWALibrary))
 
@@ -74,7 +74,7 @@
 ;; sampe
 ;; -----
 
-(defn sampe-option
+(defn ^SampeOption sampe-option
   ([] (SampeOption.))
   ([optmap]
      (let [opt (SampeOption.)]
@@ -93,4 +93,38 @@
 (defn sampe
   [db sai1 sai2 read1 read2 out opt]
   (let [n (.libbwa_sampe bwalib db sai1 sai2 read1 read2 out opt)]
+    (libbwa-error->exception n)))
+
+;; bwasw
+;; -----
+
+(defn ^SwOption sw-option
+  ([] (SwOption.))
+  ([optmap]
+     (let [opt (SwOption.)]
+       (if-let [v (:skip-sw optmap)] (set! (.skipSw opt) v))
+       (if-let [v (:cpy-cmt optmap)] (set! (.cpyCmt opt) v))
+       (if-let [v (:hard-clip optmap)] (set! (.hardClip opt) v))
+       (if-let [v (:a optmap)] (set! (.a opt) v))
+       (if-let [v (:b optmap)] (set! (.b opt) v))
+       (if-let [v (:q optmap)] (set! (.q opt) v))
+       (if-let [v (:r optmap)] (set! (.r opt) v))
+       (if-let [v (:t optmap)] (set! (.t opt) v))
+       (if-let [v (:qr optmap)] (set! (.qr opt) v))
+       (if-let [v (:bw optmap)] (set! (.bw opt) v))
+       (if-let [v (:max-ins optmap)] (set! (.maxIns opt) v))
+       (if-let [v (:max-chain-gap optmap)] (set! (.maxChainGap opt) v))
+       (if-let [v (:z optmap)] (set! (.z opt) v))
+       (if-let [v (:is optmap)] (set! (.is opt) v))
+       (if-let [v (:t-seeds optmap)] (set! (.tSeeds opt) v))
+       (if-let [v (:multi-2nd optmap)] (set! (.multi2nd opt) v))
+       (if-let [v (:mask-level optmap)] (set! (.maskLevel opt) v))
+       (if-let [v (:coef optmap)] (set! (.coef opt) v))
+       (if-let [v (:n-threads optmap)] (set! (.nThreads opt) v))
+       (if-let [v (:chunk-size optmap)] (set! (.chunkSize opt) v))
+       opt)))
+
+(defn sw
+  [db read mate out opt]
+  (let [n (.libbwa_sw bwalib db read mate out opt)]
     (libbwa-error->exception n)))

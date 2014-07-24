@@ -12,4 +12,6 @@ public interface BWALibrary extends Library {
 
     int libbwa_sampe(String db, String sai1, String sai2,
                      String read1, String read2, String out, SampeOption opt);
+
+    int libbwa_sw(String db, String read, String mate, String out, SwOption opt);
 }
