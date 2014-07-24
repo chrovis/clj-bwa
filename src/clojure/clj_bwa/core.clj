@@ -2,7 +2,8 @@
   (:require [clj-bwa.util :refer [boolean->int]]
             [clj-bwa.exception :refer [libbwa-error->exception]])
   (:import com.sun.jna.Native
-           [clj_bwa.jna BWALibrary AlnOption SamseOption SampeOption SwOption]))
+           [clj_bwa.jna BWALibrary AlnOption SamseOption SampeOption SwOption
+                        MemOption]))
 
 (def ^BWALibrary bwalib (Native/loadLibrary "bwa" BWALibrary))
 
@@ -128,3 +129,48 @@
   [db read mate out opt]
   (let [n (.libbwa_sw bwalib db read mate out opt)]
     (libbwa-error->exception n)))
+
+;; mem
+;; ----
+
+(defn ^MemOption mem-option
+  ([] (MemOption.))
+  ([optmap]
+     (let [opt (MemOption.)]
+       (if-let [v (:a optmap)] (set! (.a opt) v))
+       (if-let [v (:b optmap)] (set! (.b opt) v))
+       (if-let [v (:o-del optmap)] (set! (.oDel opt) v))
+       (if-let [v (:e-del optmap)] (set! (.eDel opt) v))
+       (if-let [v (:pen-unpaired optmap)] (set! (.penUnpaired opt) v))
+       (if-let [v (:pen-clip5 optmap)] (set! (.penClip5 opt) v))
+       (if-let [v (:pen-clip3 optmap)] (set! (.penClip3 opt) v))
+       (if-let [v (:w optmap)] (set! (.w opt) v))
+       (if-let [v (:zdrop optmap)] (set! (.zdrop opt) v))
+       (if-let [v (:t optmap)] (set! (.t opt) v))
+       (if-let [v (:flag optmap)] (set! (.flag opt) v))
+       (if-let [v (:min-seed-len optmap)] (set! (.minSeedLen opt) v))
+       (if-let [v (:min-chain-weight optmap)] (set! (.minChainWeight opt) v))
+       (if-let [v (:max-chain-extend optmap)] (set! (.maxChainExtend opt) v))
+       (if-let [v (:split-factor optmap)] (set! (.splitFactor opt) v))
+       (if-let [v (:split-width optmap)] (set! (.splitWidth opt) v))
+       (if-let [v (:max-occ optmap)] (set! (.maxOcc opt) v))
+       (if-let [v (:max-chain-gap optmap)] (set! (.maxChainGap opt) v))
+       (if-let [v (:n-threads optmap)] (set! (.nThreads opt) v))
+       (if-let [v (:chunk-size optmap)] (set! (.chunkSize opt) v))
+       (if-let [v (:mask-level optmap)] (set! (.maskLevel opt) v))
+       (if-let [v (:drop-ratio optmap)] (set! (.dropRatio opt) v))
+       (if-let [v (:xa-drop-ratio optmap)] (set! (.xaDropRatio opt) v))
+       (if-let [v (:mask-level-redun optmap)] (set! (.maskLevelRedun opt) v))
+       (if-let [v (:mapq-coef-len optmap)] (set! (.mapQCoefLen opt) v))
+       (if-let [v (:mapq-coef-fac optmap)] (set! (.mapQCoefFac opt) v))
+       (if-let [v (:max-ins optmap)] (set! (.maxIns opt) v))
+       (if-let [v (:max-matesw optmap)] (set! (.maxMatesw opt) v))
+       (if-let [v (:max-hits optmap)] (set! (.maxHits opt) v))
+       (if-let [v (:mat optmap)] (set! (.mat opt) v))
+       opt)))
+
+(defn mem
+  [db read mate out opt]
+  (let [n (.libbwa_mem bwalib db read mate out opt)]
+    (if-let [e (libbwa-error->exception n)]
+      (throw e))))
