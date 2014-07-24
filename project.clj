@@ -7,4 +7,6 @@
                  [net.java.dev.jna/jna "4.1.0"]]
   :plugins [[lein-midje "3.1.3"]]
   :profiles {:dev {:dependencies [[midje "1.6.3"]]
-                   :global-vars {*warn-on-reflection* true}}})
+                   :global-vars {*warn-on-reflection* true}}}
+  :source-paths ["src/clojure"]
+  :java-source-paths ["src/java"])
