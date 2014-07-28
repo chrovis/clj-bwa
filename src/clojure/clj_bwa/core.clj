@@ -11,10 +11,11 @@
 ;; -----
 
 (defn- algo->enum
+  "Converts algorithm keyword into libbwa's libbwa_index_algo enum. Note that
+  LIBBWA_INDEX_ALGO_DIV (1) algorithm cannot be used."
   [algo]
   (case algo
     :auto 0   ; LIBBWA_INDEX_ALGO_AUTO
-    :div 1    ; LIBBWA_INDEX_ALGO_DIV
     :bwtsw 2  ; LIBBWA_INDEX_ALGO_BWTSW
     :is 3     ; LIBBWA_INDEX_ALGO_IS
     0))
