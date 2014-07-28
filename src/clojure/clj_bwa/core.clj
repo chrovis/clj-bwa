@@ -192,3 +192,48 @@
   (let [n (.libbwa_fastmap bwalib db read out opt)]
     (if-let [e (libbwa-error->exception n)]
       (throw e))))
+
+;; fa2pac
+;; ------
+
+(defn fa2pac
+  [db prefix for-only]
+  (let [n (.libbwa_fa2pac bwalib db prefix (boolean->int for-only))]
+    (if-let [e (libbwa-error->exception n)]
+      (throw e))))
+
+;; pac2bwt
+;; -------
+
+(defn pac2bwt
+  [pac out use-is]
+  (let [n (.libbwa_pac2bwt bwalib pac out (boolean->int use-is))]
+    (if-let [e (libbwa-error->exception n)]
+      (throw e))))
+
+;; bwtgen
+;; ----------
+
+(defn bwtgen
+  [pac out]
+  (let [n (.libbwa_bwtgen bwalib pac out)]
+    (if-let [e (libbwa-error->exception n)]
+      (throw e))))
+
+;; bwtupdate
+;; ---------
+
+(defn bwtupdate
+  [bwt]
+  (let [n (.libbwa_bwtupdate bwalib bwt)]
+    (if-let [e (libbwa-error->exception n)]
+      (throw e))))
+
+;; bwt2sa
+;; ------
+
+(defn bwt2sa
+  [bwt out sa-intv]
+  (let [n (.libbwa_bwt2sa bwalib bwt out sa-intv)]
+    (if-let [e (libbwa-error->exception n)]
+      (throw e))))

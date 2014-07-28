@@ -18,4 +18,14 @@ public interface BWALibrary extends Library {
     int libbwa_mem(String db, String read, String mate, String out, MemOption opt);
 
     int libbwa_fastmap(String db, String read, String out, FastmapOption opt);
+
+    int libbwa_fa2pac(String db, String prefix, int forOnly);
+
+    int libbwa_pac2bwt(String pac, String out, int useIs);
+
+    int libbwa_bwtgen(String pac, String out);
+
+    int libbwa_bwtupdate(String bwt);
+
+    int libbwa_bwt2sa(String bwt, String out, int saIntv);
 }
