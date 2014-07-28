@@ -3,7 +3,7 @@
             [clj-bwa.exception :refer [libbwa-error->exception]])
   (:import com.sun.jna.Native
            [clj_bwa.jna BWALibrary AlnOption SamseOption SampeOption SwOption
-                        MemOption]))
+                        MemOption FastmapOption]))
 
 (def ^BWALibrary bwalib (Native/loadLibrary "bwa" BWALibrary))
 
@@ -172,5 +172,23 @@
 (defn mem
   [db read mate out opt]
   (let [n (.libbwa_mem bwalib db read mate out opt)]
+    (if-let [e (libbwa-error->exception n)]
+      (throw e))))
+
+;; fastmap
+;; -------
+
+(defn fastmap-option
+  ([] (FastmapOption.))
+  ([optmap]
+     (let [opt (FastmapOption.)]
+       (if-let [v (:print-seq optmap)] (set! (.printSeq opt) v))
+       (if-let [v (:min-iwidth optmap)] (set! (.minIwidth opt) v))
+       (if-let [v (:min-len optmap)] (set! (.minLen opt) v))
+       opt)))
+
+(defn fastmap
+  [db read out opt]
+  (let [n (.libbwa_fastmap bwalib db read out opt)]
     (if-let [e (libbwa-error->exception n)]
       (throw e))))

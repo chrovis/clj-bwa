@@ -16,4 +16,6 @@ public interface BWALibrary extends Library {
     int libbwa_sw(String db, String read, String mate, String out, SwOption opt);
 
     int libbwa_mem(String db, String read, String mate, String out, MemOption opt);
+
+    int libbwa_fastmap(String db, String read, String out, FastmapOption opt);
 }
