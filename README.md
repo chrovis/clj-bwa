@@ -1,14 +1,45 @@
-# clj-bwa
+clj-bwa
+=======
 
-A Clojure library designed to ... well, that part is up to you.
+clj-bwa is Burrows-Wheeler Aligner (BWA) wrapper for Clojure.
 
-## Usage
+Requirements
+------------
 
-FIXME
+- [libbwa][libbwa]
 
-## License
+clj-bwa uses libbwa native library via Java Native Access (JNA).
+Install libbwa to system or locate it on your `java.library.path`.
 
-Copyright © 2014 FIXME
+Usage
+-----
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Add the following dependency to your project.clj.
+
+```clojure
+[clj-bwa "0.1.0-SNAPSHOT"]
+```
+
+clj-bwa wraps BWA sub-commands for calling its features from Clojure codes.
+
+```clojure
+(require '[clj-bwa.core :as bwa])
+
+;; Index database sequences in the FASTA format.
+(bwa/index "path/to/reference.fa" "path/to/reference.fa" :auto false)
+
+;; Align 70bp-1Mbp query sequences with the BWA-MEM algorithm.
+(let [opt (bwa/mem-option)]
+  (bwa/mem "path/to/reference.fa" "path/to/read.fq" nil "path/to/out.sam" opt)
+```
+
+License
+-------
+
+Copyright 2014 [Xcoo, Inc.][xcoo]
+
+Licensed under the [Apache License, Version 2.0][apache-license-2.0].
+
+[libbwa]: https://github.com/chrovis/libbwa
+[xcoo]: http://www.xcoo.jp
+[apache-license-2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
