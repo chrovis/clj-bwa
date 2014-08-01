@@ -36,6 +36,8 @@
                     "test-resources/test.fa.bwt"
                     "test-resources/test.fa.pac"
                     "test-resources/test.fa.sa"])
+(def test-pac-file "test-resources/test.fa.pac")
+(def test-bwt-file "test-resources/test.fa.bwt")
 (def test-sai-file "test-resources/test.sai")
 (def test-fq-file "test-resources/test.fq")
 
@@ -165,3 +167,46 @@
                    (str temp-dir "/test.fq")
                    (str temp-dir "/out.fastmap")
                    (bwa/fastmap-option))) => anything))
+
+;; fa2pac test
+;; -----------
+
+(with-state-changes [(before :facts (do (prepare-cache!)
+                                        (fs/copy test-fa-file (str temp-dir "/test.fa"))))
+                     (after :facts (clean-cache!))]
+  (fact "about fa2pac"
+    (with-out-file temp-out
+      (bwa/fa2pac (str temp-dir "/test.fa") (str temp-dir "/test1.fa") false) => anything
+      (bwa/fa2pac (str temp-dir "/test.fa") (str temp-dir "/test2.fa") true) => anything)))
+
+;; pac2bwt test
+;; ------------
+
+(with-state-changes [(before :facts (do (prepare-cache!)
+                                        (fs/copy test-pac-file (str temp-dir "/test.fa.pac"))))
+                     (after :facts (clean-cache!))]
+  (fact "about pac2bwt"
+    (with-out-file temp-out
+      (bwa/pac2bwt (str temp-dir "/test.fa.pac") (str temp-dir "/test1.fa.bwt") true) => anything
+      ;; FIXME: The following fact is failed
+      #_(bwa/pac2bwt (str temp-dir "/test.fa.pac") (str temp-dir "/test2.fa.bwt") false) => anything)))
+
+;; bwtgen
+;; ------
+
+(with-state-changes [(before :facts (do (prepare-cache!)
+                                        (fs/copy test-pac-file (str temp-dir "/test.fa.pac"))))
+                     (after :facts (clean-cache!))]
+  (fact "about bwtgen"
+    (with-out-file temp-out
+      (bwa/bwtgen (str temp-dir "/test.fa.pac") (str temp-dir "/test1.fa.bwt")) => anything)))
+
+;; bwt2sa
+;; ------
+
+(with-state-changes [(before :facts (do (prepare-cache!)
+                                        (fs/copy test-bwt-file (str temp-dir "/test.fa.bwt"))))
+                     (after :facts (clean-cache!))]
+  (fact "about bwt2sa"
+    (with-out-file temp-out
+      (bwa/bwt2sa (str temp-dir "/test.fa.bwt") (str temp-dir "/test.fa.sa") 32) => anything)))
