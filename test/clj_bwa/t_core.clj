@@ -1,4 +1,5 @@
 (ns clj-bwa.t-core
+  "Tests for clj-bwa.core."
   (:require [midje.sweet :refer :all]
             [clojure.java.io :as io]
             [me.raynes.fs :as fs]
@@ -9,7 +10,7 @@
   `(binding [*out* (clojure.java.io/writer ~f)]
      ~@body))
 
-(def temp-dir (.getPath (io/file (System/getProperty "java.io.tmpdir") "cljam-test")))
+(def temp-dir (.getPath (io/file (System/getProperty "java.io.tmpdir") "clj-bwa-test")))
 
 (defn prepare-cache!
   []
@@ -24,8 +25,21 @@
       (.delete dir))))
 
 (def temp-out (str temp-dir "/out"))
+
+;; Test resources
+;; --------------
+
 (def test-fa-file "test-resources/test.fa")
+(def test-db-files ["test-resources/test.fa.amb"
+                    "test-resources/test.fa.ann"
+                    "test-resources/test.fa.bwt"
+                    "test-resources/test.fa.pac"])
+(def test-fq-file "test-resources/test.fq")
+
 (def temp-fa-file (str temp-dir "/test.fa"))
+
+;; index test
+;; ----------
 
 (with-state-changes [(before :facts (do (prepare-cache!)
                                         (fs/copy test-fa-file
@@ -39,5 +53,19 @@
     (with-out-file temp-out
       (bwa/index temp-fa-file (str temp-dir "/test3.fa") :is false)) => anything
     (with-out-file temp-out
-      (bwa/index temp-fa-file (str temp-dir "/test4.fa") :auto true)) => anything
-      ))
+      (bwa/index temp-fa-file (str temp-dir "/test4.fa") :auto true)) => anything))
+
+;; aln test
+;; --------
+
+(with-state-changes [(before :facts (do (prepare-cache!)
+                                        (doseq [f test-db-files]
+                                          (fs/copy f (str temp-dir "/" (fs/base-name f))))
+                                        (fs/copy test-fq-file (str temp-dir "/test.fq"))))
+                     (after :facts (clean-cache!))]
+  (fact "about aln"
+    (with-out-file temp-out
+      (bwa/aln (str temp-dir "/test.fa")
+               (str temp-dir "/test.fq")
+               (str temp-dir "/test.sai")
+               (bwa/aln-option))) => anything))
