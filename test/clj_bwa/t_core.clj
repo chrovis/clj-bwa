@@ -88,3 +88,37 @@
                  (str temp-dir "/test.fq")
                  (str temp-dir "/out.sam")
                  (bwa/samse-option))) => anything))
+
+;; sampe test
+;; ----------
+
+(with-state-changes [(before :facts (do (prepare-cache!)
+                                        (doseq [f test-db-files]
+                                          (fs/copy f (str temp-dir "/" (fs/base-name f))))
+                                        (fs/copy test-sai-file (str temp-dir "/test.sai"))
+                                        (fs/copy test-fq-file (str temp-dir "/test.fq"))))
+                     (after :facts (clean-cache!))]
+  (fact "about sampe"
+    (with-out-file temp-out
+      (bwa/sampe (str temp-dir "/test.fa")
+                 (str temp-dir "/test.sai") (str temp-dir "/test.sai")
+                 (str temp-dir "/test.fq") (str temp-dir "/test.fq")
+                 (str temp-dir "/out.sam")
+                 (bwa/sampe-option))) => anything))
+
+;; bwasw test
+;; ----------
+
+(with-state-changes [(before :facts (do (prepare-cache!)
+                                        (doseq [f test-db-files]
+                                          (fs/copy f (str temp-dir "/" (fs/base-name f))))
+                                        (fs/copy test-sai-file (str temp-dir "/test.sai"))
+                                        (fs/copy test-fq-file (str temp-dir "/test.fq"))))
+                     (after :facts (clean-cache!))]
+  (fact "about bwasw"
+    (with-out-file temp-out
+      (bwa/sw (str temp-dir "/test.fa")
+              (str temp-dir "/test.sai")
+              (str temp-dir "/test.fq")
+              (str temp-dir "/out.sam")
+              (bwa/sw-option))) => anything))
