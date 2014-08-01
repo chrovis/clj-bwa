@@ -4,7 +4,7 @@
             [clojure.java.io :as io]
             [me.raynes.fs :as fs]
             [clj-bwa.core :as bwa])
-  (:import [clj_bwa.jna MemOption]))
+  (:import [clj_bwa.jna MemOption FastmapOption]))
 
 (defmacro with-out-file
   [f & body]
@@ -124,7 +124,7 @@
               (bwa/sw-option))) => anything))
 
 ;; mem test
-;; ----------
+;; --------
 
 (fact "about mem-option"
   (type (bwa/mem-option)) => MemOption
@@ -144,3 +144,24 @@
                nil
                (str temp-dir "/out.sam")
                (bwa/mem-option))) => anything))
+
+;; fastmap test
+;; ------------
+
+(fact "about fastmap-option"
+  (type (bwa/fastmap-option)) => FastmapOption
+  (type (bwa/fastmap-option nil)) => FastmapOption
+  (type (bwa/fastmap-option {})) => FastmapOption
+  (type (bwa/fastmap-option {:min-len 100})) => FastmapOption)
+
+(with-state-changes [(before :facts (do (prepare-cache!)
+                                        (doseq [f test-db-files]
+                                          (fs/copy f (str temp-dir "/" (fs/base-name f))))
+                                        (fs/copy test-fq-file (str temp-dir "/test.fq"))))
+                     (after :facts (clean-cache!))]
+  (fact "about fastmap"
+    (with-out-file temp-out
+      (bwa/fastmap (str temp-dir "/test.fa")
+                   (str temp-dir "/test.fq")
+                   (str temp-dir "/out.fastmap")
+                   (bwa/fastmap-option))) => anything))
