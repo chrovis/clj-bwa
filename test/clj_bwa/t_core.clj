@@ -33,7 +33,9 @@
 (def test-db-files ["test-resources/test.fa.amb"
                     "test-resources/test.fa.ann"
                     "test-resources/test.fa.bwt"
-                    "test-resources/test.fa.pac"])
+                    "test-resources/test.fa.pac"
+                    "test-resources/test.fa.sa"])
+(def test-sai-file "test-resources/test.sai")
 (def test-fq-file "test-resources/test.fq")
 
 (def temp-fa-file (str temp-dir "/test.fa"))
@@ -67,5 +69,22 @@
     (with-out-file temp-out
       (bwa/aln (str temp-dir "/test.fa")
                (str temp-dir "/test.fq")
-               (str temp-dir "/test.sai")
+               (str temp-dir "/out.sai")
                (bwa/aln-option))) => anything))
+
+;; samse test
+;; ----------
+
+(with-state-changes [(before :facts (do (prepare-cache!)
+                                        (doseq [f test-db-files]
+                                          (fs/copy f (str temp-dir "/" (fs/base-name f))))
+                                        (fs/copy test-sai-file (str temp-dir "/test.sai"))
+                                        (fs/copy test-fq-file (str temp-dir "/test.fq"))))
+                     (after :facts (clean-cache!))]
+  (fact "about samse"
+    (with-out-file temp-out
+      (bwa/samse (str temp-dir "/test.fa")
+                 (str temp-dir "/test.sai")
+                 (str temp-dir "/test.fq")
+                 (str temp-dir "/out.sam")
+                 (bwa/samse-option))) => anything))
