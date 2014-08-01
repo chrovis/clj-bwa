@@ -33,6 +33,26 @@ clj-bwa wraps BWA sub-commands for calling its features from Clojure codes.
   (bwa/mem "path/to/reference.fa" "path/to/read.fq" nil "path/to/out.sam" opt)
 ```
 
+## Development
+
+### Test
+
+To run all tests,
+
+```bash
+$ lein midje
+```
+
+### Generating document
+
+cljam uses [Marginalia][marginalia] for generating documents.
+
+```bash
+$ lein marg -m
+```
+
+generates HTML documents in `docs` directory.
+
 License
 -------
 
@@ -41,5 +61,6 @@ Copyright 2014 [Xcoo, Inc.][xcoo]
 Licensed under the [Apache License, Version 2.0][apache-license-2.0].
 
 [libbwa]: https://github.com/chrovis/libbwa
+[marginalia]: http://gdeer81.github.io/marginalia/
 [xcoo]: http://www.xcoo.jp
 [apache-license-2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
