@@ -3,7 +3,8 @@
   (:require [midje.sweet :refer :all]
             [clojure.java.io :as io]
             [me.raynes.fs :as fs]
-            [clj-bwa.core :as bwa]))
+            [clj-bwa.core :as bwa])
+  (:import [clj_bwa.jna MemOption]))
 
 (defmacro with-out-file
   [f & body]
@@ -112,13 +113,34 @@
 (with-state-changes [(before :facts (do (prepare-cache!)
                                         (doseq [f test-db-files]
                                           (fs/copy f (str temp-dir "/" (fs/base-name f))))
-                                        (fs/copy test-sai-file (str temp-dir "/test.sai"))
                                         (fs/copy test-fq-file (str temp-dir "/test.fq"))))
                      (after :facts (clean-cache!))]
   (fact "about bwasw"
     (with-out-file temp-out
       (bwa/sw (str temp-dir "/test.fa")
-              (str temp-dir "/test.sai")
               (str temp-dir "/test.fq")
+              nil
               (str temp-dir "/out.sam")
               (bwa/sw-option))) => anything))
+
+;; mem test
+;; ----------
+
+(fact "about mem-option"
+  (type (bwa/mem-option)) => MemOption
+  (type (bwa/mem-option nil)) => MemOption
+  (type (bwa/mem-option {})) => MemOption
+  (type (bwa/mem-option {:a 0})) => MemOption)
+
+(with-state-changes [(before :facts (do (prepare-cache!)
+                                        (doseq [f test-db-files]
+                                          (fs/copy f (str temp-dir "/" (fs/base-name f))))
+                                        (fs/copy test-fq-file (str temp-dir "/test.fq"))))
+                     (after :facts (clean-cache!))]
+  (fact "about mem"
+    (with-out-file temp-out
+      (bwa/mem (str temp-dir "/test.fa")
+               (str temp-dir "/test.fq")
+               nil
+               (str temp-dir "/out.sam")
+               (bwa/mem-option))) => anything))
