@@ -212,9 +212,7 @@
                      (after :facts (clean-cache!))]
   (fact "about pac2bwt"
     (with-out-file temp-out
-      (bwa/pac2bwt (str temp-dir "/test.fa.pac") (str temp-dir "/test1.fa.bwt") true) => anything
-      ;; FIXME: The following fact is failed
-      #_(bwa/pac2bwt (str temp-dir "/test.fa.pac") (str temp-dir "/test2.fa.bwt") false) => anything)))
+      (bwa/pac2bwt (str temp-dir "/test.fa.pac") (str temp-dir "/test1.fa.bwt")) => anything)))
 
 ;; bwtgen
 ;; ------

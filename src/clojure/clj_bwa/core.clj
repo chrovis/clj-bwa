@@ -207,8 +207,8 @@
 ;; -------
 
 (defn pac2bwt
-  [pac out use-is]
-  (let [n (.libbwa_pac2bwt bwalib pac out (boolean->int use-is))]
+  [pac out]
+  (let [n (.libbwa_pac2bwt bwalib pac out (boolean->int true))]
     (if-let [e (libbwa-error->exception n)]
       (throw e))))
 
