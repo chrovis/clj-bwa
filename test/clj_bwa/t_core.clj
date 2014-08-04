@@ -4,7 +4,8 @@
             [clojure.java.io :as io]
             [me.raynes.fs :as fs]
             [clj-bwa.core :as bwa])
-  (:import [clj_bwa.jna MemOption FastmapOption]))
+  (:import [clj_bwa.jna AlnOption SamseOption SampeOption SwOption MemOption
+                        FastmapOption]))
 
 (defmacro with-out-file
   [f & body]
@@ -63,6 +64,12 @@
 ;; aln test
 ;; --------
 
+(fact "about aln-option"
+  (type (bwa/aln-option)) => AlnOption
+  (type (bwa/aln-option nil)) => AlnOption
+  (type (bwa/aln-option {})) => AlnOption
+  (type (bwa/aln-option {:s-mm 5})) => AlnOption)
+
 (with-state-changes [(before :facts (do (prepare-cache!)
                                         (doseq [f test-db-files]
                                           (fs/copy f (str temp-dir "/" (fs/base-name f))))
@@ -77,6 +84,12 @@
 
 ;; samse test
 ;; ----------
+
+(fact "about samse-option"
+  (type (bwa/samse-option)) => SamseOption
+  (type (bwa/samse-option nil)) => SamseOption
+  (type (bwa/samse-option {})) => SamseOption
+  (type (bwa/samse-option {:n-occ 4})) => SamseOption)
 
 (with-state-changes [(before :facts (do (prepare-cache!)
                                         (doseq [f test-db-files]
@@ -95,6 +108,12 @@
 ;; sampe test
 ;; ----------
 
+(fact "about sampe-option"
+  (type (bwa/sampe-option)) => SampeOption
+  (type (bwa/sampe-option nil)) => SampeOption
+  (type (bwa/sampe-option {})) => SampeOption
+  (type (bwa/sampe-option {:max-isize 400})) => SampeOption)
+
 (with-state-changes [(before :facts (do (prepare-cache!)
                                         (doseq [f test-db-files]
                                           (fs/copy f (str temp-dir "/" (fs/base-name f))))
@@ -111,6 +130,12 @@
 
 ;; bwasw test
 ;; ----------
+
+(fact "about sw-option"
+  (type (bwa/sw-option)) => SwOption
+  (type (bwa/sw-option nil)) => SwOption
+  (type (bwa/sw-option {})) => SwOption
+  (type (bwa/sw-option {:skip-sw 1})) => SwOption)
 
 (with-state-changes [(before :facts (do (prepare-cache!)
                                         (doseq [f test-db-files]
