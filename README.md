@@ -3,6 +3,8 @@ clj-bwa
 
 clj-bwa is Burrows-Wheeler Aligner (BWA) wrapper for Clojure.
 
+[![Build Status](https://travis-ci.org/chrovis/clj-bwa.svg?branch=master)](https://travis-ci.org/chrovis/clj-bwa)
+
 Requirements
 ------------
 
