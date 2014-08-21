@@ -7,8 +7,8 @@ import com.sun.jna.Structure;
 
 public class MemOption extends Structure {
 
-    public int a = 1;
-    public int b = 4;
+    public int matchScore = 1;
+    public int mismatchPenalty = 4;
 
     public int oDel = 6;
     public int eDel = 1;
@@ -21,7 +21,7 @@ public class MemOption extends Structure {
     public int penClip5 = 5;
     public int penClip3 = 5;
 
-    public int w = 100;
+    public int bandWidth = 100;
 
     public int zdrop = 100;
 
@@ -55,9 +55,7 @@ public class MemOption extends Structure {
 
     public float maskLevelRedun = 0.95F;
 
-    public float mapQCoefLen = 50F;
-
-    public int mapQCoefFac = (int)Math.log(mapQCoefLen);
+    public float mapqCoefLen = 50F;
 
     public int maxIns = 10000;
 
@@ -65,32 +63,16 @@ public class MemOption extends Structure {
 
     public int maxHits = 5;
 
-    public byte[] mat = new byte[25];
-
-    public MemOption() {
-        super();
-        bwaFillScmat();
-    }
-
-    private void bwaFillScmat() {
-        int i, j, k;
-        for (i = k = 0; i < 4; ++i) {
-            for (j = 0; j < 4; ++j)
-                mat[k++] = (byte)(i == j ? a : -b);
-            mat[k++] = -1; // ambiguous base
-        }
-        for (j = 0; j < 5; ++j) mat[k++] = -1;
-    }
-
     @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList(new String[] {
-                "a", "b",
+                "matchScore",
+                "mismatchPenalty",
                 "oDel", "eDel",
                 "oIns", "eIns",
                 "penUnpaired",
                 "penClip5", "penClip3",
-                "w",
+                "bandWidth",
                 "zdrop",
                 "t",
                 "flag",
@@ -107,12 +89,10 @@ public class MemOption extends Structure {
                 "dropRatio",
                 "xaDropRatio",
                 "maskLevelRedun",
-                "mapQCoefLen",
-                "mapQCoefFac",
+                "mapqCoefLen",
                 "maxIns",
                 "maxMatesw",
-                "maxHits",
-                "mat"
+                "maxHits"
             });
     }
 }
