@@ -3,7 +3,7 @@
 
 (defn libbwa-error->exception
   [n]
-  (case n
+  (case (int n)
     0 nil
     ;; General errors
     10 (IllegalArgumentException. "invalid arguments")
